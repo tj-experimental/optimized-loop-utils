@@ -1,4 +1,5 @@
 import enum
+import collections
 
 # class ArrayType(enum.Enum):
 #     ONE = 0  # 1D
@@ -29,6 +30,7 @@ def _apply_func_to_items(
     items,
     func_args=(),
     size_func=len,
+    flatten=False,
     split_type=SplitType.HALF,
     max_workers=4 # This should use the CPU count.
 ):
@@ -64,11 +66,13 @@ def _apply_func_to_items(
         # Flatten the results
         # TODO: Why is this returning duplicate records ? (
         # Shouldn't need to use set here)
-        results = set([
-            i
-            for item in [job.result() for job in jobs]
-            for i in item
-        ])
+        results = set()
+
+        for item in [job.result() for job in jobs]:
+            if isinstance(item, collections.Iterable) and flatten:
+                results |= set([i for i in item])
+            else:
+                results.add(item)
 
         return results
 
@@ -117,10 +121,12 @@ def _apply_func_to_items_for_each_parent(
         # Flatten the results
         # TODO: Why is this returning duplicate records ? (
         # Shouldn't need to use set here)
-        results = set([
-            i
-            for item in [job.result() for job in jobs]
-            for i in item
-        ])
+        results = set()
+
+        for item in [job.result() for job in jobs]:
+            if isinstance(item, collections.Iterable) and flatten:
+                results |= set([i for i in item])
+            else:
+                results.add(item)
 
         return results
