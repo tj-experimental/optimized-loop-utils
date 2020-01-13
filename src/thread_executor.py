@@ -1,7 +1,7 @@
 from functools import partial
 from concurrent.futures import ThreadPoolExecutor as Executor
 
-from utils.base import (
+from src.base import (
     _apply_func_to_items as base_apply_func_to_items,
     _apply_func_to_items_for_each_parent as base_apply_func_to_items_for_each_parent,
 )
